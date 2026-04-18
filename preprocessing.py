@@ -1,7 +1,6 @@
 import pandas as pd
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 
-# Load dataset
 df = pd.read_csv("Sub_Division_IMD_2017.csv")
 
 # Handle missing values
@@ -22,12 +21,17 @@ for col in df.select_dtypes(include=['object']).columns:
 
 print("Preprocessing completed")
 
+
 # Outlier detection and removal using IQR
 for col in numeric_cols:
     Q1 = df[col].quantile(0.25)
     Q3 = df[col].quantile(0.75)
     IQR = Q3 - Q1
-    df = df[(df[col] >= Q1 - 1.5*IQR) & (df[col] <= Q3 + 1.5*IQR)]
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+    df = df[(df[col] >= lower_bound) & (df[col] <= upper_bound)]
 
 print("Outliers removed using IQR")
+print("Dataset shape after cleaning:", df.shape)
+
 
